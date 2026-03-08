@@ -6,6 +6,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { prisma } from "@/lib/db";
 import type { PlanId } from "@/lib/plans";
 
+export const dynamic = "force-dynamic";
 /**
  * GET /api/subscription/current
  * Returns the user's current plan, today's usage, and remaining quotas.

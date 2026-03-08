@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { prisma } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
 /**
  * GET /api/subscription/plans
  * Returns all available plans with pricing in the user's currency.

@@ -4,6 +4,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { prisma } from "@/lib/db";
 import { headers } from "next/headers";
 
+export const dynamic = "force-dynamic";
 /**
  * GET /api/user/detect-currency
  * Detects the user's currency based on timezone/locale headers.

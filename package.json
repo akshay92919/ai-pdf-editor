@@ -14,6 +14,7 @@
     "ai": "^6.0.116",
     "axios": "^1.13.6",
     "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
     "express": "^5.2.1",
     "framer-motion": "^12.35.1",
@@ -39,6 +40,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/bcrypt": "^6.0.0",
+    "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20",
     "@types/pdf-parse": "^1.1.5",
