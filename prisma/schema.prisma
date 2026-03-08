@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String
+  role          String    @default("USER") // USER, ADMIN
+  plan          String    @default("spark") // spark, flow, infinity
+  currency      String    @default("USD") // USD, INR
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  files         FileRecord[]
+  toolUsages    ToolUsage[]
+  chatSessions  AiChatSession[]
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan        String   // spark, flow, infinity
+  status      String   @default("active") // active, cancelled, expired
+  startDate   DateTime @default(now())
+  renewalDate DateTime?
+  createdAt   DateTime @default(now())
+}
+
+model DailyUsage {
+  id         String   @id @default(cuid())
+  userId     String   // Can be User.id or arbitrary guest string
+  toolId     String   // e.g. "merge", "ai-summarize", "__file_count__"
+  usageDate  String   // "YYYY-MM-DD" for easy grouping
+  usageCount Int      @default(0)
+
+  @@unique([userId, toolId, usageDate])
+}
+
+model FileRecord {
+  id           String    @id @default(cuid())
+  userId       String?   // null for guest
+  user         User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  fileName     String
+  savedPath    String
+  fileSize     Int       // bytes
+  mimeType     String
+  isTemporary  Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  expiresAt    DateTime? // when it should be cleaned up
+  
+  chatSessions AiChatSession[]
+}
+
+model ToolUsage {
+  id          String   @id @default(cuid())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  toolId      String   // e.g. "merge", "compress", "ai-summarize"
+  status      String   // SUCCESS, FAILED
+  errorMessage String?
+  createdAt   DateTime @default(now())
+}
+
+model AiChatSession {
+  id        String      @id @default(cuid())
+  userId    String?
+  user      User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  fileId    String
+  file      FileRecord  @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  messages  String      // Store as JSON string [{role, content}]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
