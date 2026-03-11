@@ -24,6 +24,10 @@ export async function POST(
     const userId = session?.user ? (session.user as any).id : null;
     const userRole = session?.user ? (session.user as any).role : "USER";
 
+    if (request.method !== 'POST') {
+      return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
+    }
+
     const formData = await request.formData();
     const files = formData.getAll("files") as File[];
     

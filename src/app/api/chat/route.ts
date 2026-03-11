@@ -1,5 +1,5 @@
 import { streamLocalAI, checkOllamaHealth } from "@/services/localAIService";
-import { UsageService, LimitExceededError } from "@/services/usage.service";
+import { UsageService } from "@/services/usage.service";
 import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
@@ -10,6 +10,10 @@ export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
   try {
+    if (req.method !== 'POST') {
+      return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405 });
+    }
+
     const { messages, toolContext } = await req.json();
     const toolId = toolContext || "ai-chat";
 
@@ -49,12 +53,6 @@ export async function POST(req: Request) {
     });
 
   } catch (error: any) {
-    if (error instanceof LimitExceededError) {
-      return new Response(
-        JSON.stringify({ error: "limit_reached", message: error.message, recommended_plan: error.recommendedPlan }),
-        { status: 429, headers: { "Content-Type": "application/json" } }
-      );
-    }
     console.error("Chat route error:", error);
     return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: { "Content-Type": "application/json" } });
   }

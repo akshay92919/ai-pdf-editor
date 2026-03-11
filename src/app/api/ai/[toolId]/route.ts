@@ -56,6 +56,11 @@ export async function POST(
     let messages: any[] = [];
     let customPrompt = "";
 
+    // Vercel build-time static evaluation simulated requests check
+    if (req.method !== 'POST') {
+      return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405 });
+    }
+
     const contentType = req.headers.get("content-type") || "";
 
     if (contentType.includes("multipart/form-data")) {
