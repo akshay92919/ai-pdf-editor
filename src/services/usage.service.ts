@@ -22,9 +22,12 @@ function nextPlan(current: PlanId): string {
 }
 
 export class UsageService {
+  /** Config flag to easily toggle limits globally. Hardcoded to false for unlimited development access. */
+  private static readonly ENABLE_LIMITS = false;
+
   /** Returns true if running in development mode — all limits are bypassed */
   private static get isDev(): boolean {
-    return process.env.NODE_ENV === "development";
+    return process.env.NODE_ENV === "development" || !this.ENABLE_LIMITS;
   }
 
   /**

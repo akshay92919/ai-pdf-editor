@@ -30,7 +30,9 @@ export async function POST(
     const session = await getServerSession(authOptions);
     const userId = session?.user ? (session.user as any).id : null;
     const userRole = session?.user ? (session.user as any).role : "USER";
-    let userPlan: PlanId = "spark";
+    
+    // Usage tracking only, enforcement is disabled globally
+    let userPlan: PlanId = "infinity"; // default to highest tier capability
     if (userId) {
       const user = await prisma.user.findUnique({ where: { id: userId }, select: { plan: true } });
       if (user?.plan) userPlan = user.plan as PlanId;
@@ -119,14 +121,7 @@ export async function POST(
   } catch (error: any) {
     console.error(`AI Tool Error [${error?.message || ''}]:`, error);
     
-    // ── Structured limit-exceeded response ──
-    if (error instanceof LimitExceededError) {
-      return new Response(
-        JSON.stringify({ error: "limit_reached", message: error.message, recommended_plan: error.recommendedPlan }),
-        { status: 429, headers: { "Content-Type": "application/json" } }
-      );
-    }
-
+    console.error(`[AI API] Processing Error:`, error);
     return new Response(
       JSON.stringify({ error: "processing_error", message: error.message || "An unexpected error occurred while processing your request." }), 
       { status: 500, headers: { "Content-Type": "application/json" } }

@@ -25,7 +25,6 @@ export default function Navbar() {
             <Link href="/#pdf-tools" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">PDF Tools</Link>
             <Link href="/#conversion-tools" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Conversion Tools</Link>
             <Link href="/#features" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Features</Link>
-            <Link href="/#pricing" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Pricing</Link>
           </div>
 
           <div className="hidden md:flex items-center space-x-4">

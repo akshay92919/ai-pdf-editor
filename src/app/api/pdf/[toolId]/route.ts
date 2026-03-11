@@ -34,8 +34,8 @@ export async function POST(
     const resolvedParams = await params;
     const toolId = resolvedParams.toolId;
 
-    // ── USAGE LIMIT ENFORCEMENT ──
-    let userPlan: PlanId = "spark";
+    // Usage tracking only, enforcement is disabled globally
+    let userPlan: PlanId = "infinity"; // default to highest tier capability
     if (userId) {
       const user = await prisma.user.findUnique({ where: { id: userId }, select: { plan: true } });
       if (user?.plan) userPlan = user.plan as PlanId;
@@ -145,14 +145,6 @@ export async function POST(
     });
 
   } catch (error: any) {
-    // ── Structured limit-exceeded response ──
-    if (error instanceof LimitExceededError) {
-      return NextResponse.json(
-        { error: "limit_reached", message: error.message, recommended_plan: error.recommendedPlan },
-        { status: 429 }
-      );
-    }
-
     console.error(`Error processing PDF:`, error);
     
     // Log failure metrics

@@ -74,40 +74,6 @@ export default function DashboardOverview() {
           <h1 className="text-3xl font-heading font-bold text-foreground">Dashboard</h1>
           <p className="text-muted-foreground mt-1 text-lg">Welcome back. Select a tool to begin.</p>
         </div>
-        
-        {subscription ? (
-          <div className="flex items-center gap-4 bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
-            <div className="px-4 border-r border-slate-200">
-              <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider mb-1">
-                <span className="text-violet-600 font-bold">{subscription.plan.name}</span> Plan
-              </p>
-              <div className="flex items-center gap-2">
-                <div className="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-violet-500 rounded-full" 
-                    style={{ width: `${Math.min(100, (subscription.usage.filesProcessedToday / subscription.usage.maxFilesPerDay) * 100)}%` }}
-                  />
-                </div>
-                <p className="text-sm font-bold text-foreground">
-                  {subscription.usage.filesProcessedToday} / {subscription.usage.maxFilesPerDay}
-                </p>
-              </div>
-            </div>
-            <div className="px-4 flex items-center gap-3">
-              <div>
-                <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider mb-1">Max File Size</p>
-                <p className="text-sm font-bold text-foreground">{subscription.usage.maxFileSizeMB} MB</p>
-              </div>
-              {subscription.plan.id !== "infinity" && (
-                <Link href="/#pricing" className="ml-2 flex items-center gap-1 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm hover:shadow transition-all">
-                  <Zap className="w-3 h-3" /> Upgrade
-                </Link>
-              )}
-            </div>
-          </div>
-        ) : (
-          <div className="h-16 w-64 bg-slate-100 animate-pulse rounded-2xl border border-slate-200" />
-        )}
       </header>
 
       {/* TABS */}

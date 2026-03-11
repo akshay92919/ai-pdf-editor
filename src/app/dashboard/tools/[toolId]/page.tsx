@@ -91,9 +91,7 @@ export default function ToolPage() {
       let errMsg = "Failed to process files. Please check file sizes or try again later.";
       try {
         const parsed = JSON.parse(error.message);
-        if (parsed.error === 'limit_reached') {
-          errMsg = parsed.message || "You reached today's limit. Upgrade to Flow or Infinity AI for higher usage.";
-        } else if (parsed.error) {
+        if (parsed.error) {
           errMsg = parsed.error;
         }
       } catch (e) {
@@ -156,17 +154,11 @@ export default function ToolPage() {
         
         if (!res.ok) {
           let errMsg = "Failed to communicate with AI.";
-          let recommendedPlan: string | undefined;
           try {
              const errData = await res.json();
-             if (errData.error === 'limit_reached') {
-               errMsg = errData.message || "You reached today's limit. Upgrade to Flow or Infinity AI for higher usage.";
-               recommendedPlan = errData.recommended_plan;
-             } else {
-               errMsg = errData.message || errData.error || errData.details || errMsg;
-             }
+             errMsg = errData.message || errData.error || errData.details || errMsg;
           } catch(e) {}
-          setServerError(errMsg + (recommendedPlan ? ` (Recommended: ${recommendedPlan})` : ''));
+          setServerError(errMsg);
           return;
         }
 
@@ -214,17 +206,11 @@ export default function ToolPage() {
       
       if (!res.ok) {
         let errMsg = "Failed to communicate with AI.";
-        let recommendedPlan: string | undefined;
         try {
            const errData = await res.json();
-           if (errData.error === 'limit_reached') {
-             errMsg = errData.message || "You reached today's limit. Upgrade to Flow or Infinity AI for higher usage.";
-             recommendedPlan = errData.recommended_plan;
-           } else {
-             errMsg = errData.message || errData.error || errData.details || errMsg;
-           }
+           errMsg = errData.message || errData.error || errData.details || errMsg;
         } catch(e) {}
-        setServerError(errMsg + (recommendedPlan ? ` (Recommended: ${recommendedPlan})` : ''));
+        setServerError(errMsg);
         return;
       }
 
@@ -301,11 +287,6 @@ export default function ToolPage() {
           {serverError && (
             <div className="mb-6 p-4 rounded-xl border border-red-200 bg-red-50 flex flex-col items-center text-center">
               <span className="text-red-700 font-medium">{serverError}</span>
-              {serverError.includes("limit") && serverError.includes("Upgrade") && (
-                <Link href="/#pricing" className="mt-3 inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium text-sm">
-                  View Upgrade Plans
-                </Link>
-              )}
             </div>
           )}    </div>
             )}
